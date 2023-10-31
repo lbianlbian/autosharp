@@ -1,0 +1,51 @@
+<html>
+    <head> 
+        <title> autosharp </title>
+        <style>
+            input{
+                width: 90%;
+                height: 25%;
+                font-size:300%;
+            }
+            button{
+                margin: 2%;
+                width: 90%;
+                height: 30%;
+                font-size: 300%;
+            }
+        </style>
+        <script>
+            function displayMsg(e){
+                //show  a message on call success
+                alert(e.target.response);
+            }
+            function callLambda(){
+                //get url params
+                let urlParams = new URLSearchParams(window.location.search);
+                let game = urlParams.get("game");
+                let bettype = urlParams.get("bettype");
+                let league = urlParams.get("league");
+                let odds = document.getElementById("odds").value;
+                let line = document.getElementById("line").value;
+                //make call
+                let call = new XMLHttpRequest();
+                call.addEventListener("load", displayMsg);
+                let url = "https://wdxvgyv7z3.execute-api.ca-central-1.amazonaws.com/betWriter" +
+                    "?game=" + game + 
+                    "&bettype=" + bettype + 
+                    "&odds=" + odds + 
+                    "&line=" + line +
+                    "&league=" + league;
+                call.open("GET", url);
+                call.send();
+            }
+        </script>
+    </head>
+    <body>
+        <h1> Odds: </h1>
+        <input type = "text" id = "odds" />
+        <h1> Line: </h1>
+        <input type = "text" id = "line" />
+        <button onclick = "callLambda()"> Autofill sharp bets sheet </button>
+    </body>
+</html>
