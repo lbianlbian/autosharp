@@ -15,16 +15,37 @@
         <th> Market Odds </th>
         <th> Market Line </th>
       </tr>
-      <tr>
-        <td> MLB </td>
-        <td> CIN@CLE </td>
-        <td> 1727242800 </td>
-        <td> totalUnder </td>
-        <td> 11 </td>
-        <td> 20 </td>
-        <td> 100 </td>
-        <td> 8 </td>
-      </tr>
     </table>
+    <script>
+      var attrs = ["league", "game", "start_time", "bettype", "tickets", "volume", "odds", "line"];
+      /*
+      called when the page is loaded, makes an api call and then populates the dashboard
+      */
+      function populateDashboard(){
+        let tableEl = document.getElementsByTagName("table")[0];
+        //make api call
+        let call = new XMLHttpRequest();
+        call.open("GET", "https://mcw33kmxz2.execute-api.us-west-1.amazonaws.com/dashboardAPI", false);
+        call.send();
+        let resp = JSON.parse(call.responseText);
+        for(let potentialBet of resp){
+          //  make a new row for each potential bet
+          let rowEl = document.createElement("tr");
+          // add appropriate attributes for each row
+          for(let attr of attrs){
+            let cell = document.createElement("td");
+            let val = potentialBet[attr];
+            if(attr == "game"){
+              val = potentialBet[attr].split("|")[0];
+            } else if (attr == "start_time"){
+              val = new Date(potentialBet[attr] * 1000);
+            }
+            cell.innerText = val;
+            rowEl.appendChild(cell);
+          }
+          tableEl.appendChild(rowEl);
+        }
+      }
+    </script>
   </body>
 </html>
